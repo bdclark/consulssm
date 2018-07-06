@@ -17,3 +17,39 @@ variable "consul_datacenter" {
   description = "The Consul datacenter"
   default     = "dc1"
 }
+
+variable "consul_acls" {
+  description = "List of Consul ACL definitions"
+  default = [
+    {
+      slug = "agent"
+      Name = "Agent Token"
+      Type = "client"
+
+      Rules = <<EOF
+node "" { policy = "write" }
+service "" { policy = "read" }
+key "_rexec/" { policy = "write" }
+EOF
+    },
+    {
+      ID   = "anonymous"
+      Name = "Anonymous Token"
+
+      Rules = <<EOF
+node "" { policy = "read" }
+service "" { policy = "read" }
+EOF
+    },
+    {
+      ID      = "OldDeprecatedToken"
+      Name    = "Some ACL That Should Not Exist"
+      Destroy = "true"
+    },
+    {
+      ID   = "supersecret"
+      Name = "Some Management Token"
+      Type = "management"
+    },
+  ]
+}

@@ -19,5 +19,5 @@ vendor/
 .vscode
 
 # Terraform
-.terraform
+.terraform*
 terraform.tfstate*

@@ -1,3 +1,16 @@
+
+// create ssm parameters for each member of `consul_acls` above
+// name will be in format <consul_acl_definition_prefix>/<slug>
+// unless `slug` is not defined, then it will use
+// <consul_acl_definition_prefix>/<Name>
+// all spaces will be removed
+resource "aws_ssm_parameter" "consul_acls" {
+  count = "${length(var.consul_acls)}"
+  type  = "String"
+  name  = "${var.consul_acl_definition_prefix}/${replace(lookup(var.consul_acls[count.index], "slug", lookup(var.consul_acls[count.index], "Name")), " ", "")}"
+  value = "${jsonencode(var.consul_acls[count.index])}"
+}
+
 locals {
   // Consul configuration applied to agent
   consul_config = {
@@ -5,56 +18,6 @@ locals {
     acl_default_policy = "deny"
     acl_down_policy    = "extend-cache"
   }
-
-  // ACL definitions
-  consul_acls = [
-    {
-      slug = "agent"
-
-      definition = {
-        Name = "Agent Token"
-        Type = "client"
-
-        Rules = <<EOF
-node "" { policy = "write" }
-service "" { policy = "read" }
-key "_rexec/" { policy = "write" }
-EOF
-      }
-    },
-    {
-      slug = "anonymous"
-
-      definition = {
-        ID   = "anonymous"
-        Name = "Anonymous Token"
-
-        Rules = <<EOF
-node "" { policy = "read" }
-service "" { policy = "read" }
-EOF
-      }
-    },
-    {
-      slug = "crusty"
-
-      definition = {
-        ID      = "OldDeprecatedToken"
-        Name    = "Some old ACL that should be removed"
-        Destroy = "true"
-      }
-    },
-  ]
-}
-
-// create ssm parameters for each member of `consul_acls` above
-// name will be in format <consul_acl_definition_prefix>/<slug>
-resource "aws_ssm_parameter" "consul_acls" {
-  count = "${length(local.consul_acls)}"
-  type  = "String"
-  name  = "${var.consul_acl_definition_prefix}/${lookup(local.consul_acls[count.index], "slug")}"
-  value = "1"
-  value = "${jsonencode(local.consul_acls[count.index])}"
 }
 
 resource "docker_image" "consul" {
