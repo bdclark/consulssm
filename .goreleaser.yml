@@ -15,7 +15,7 @@ builds:
   - "6"
   main: .
   ldflags: -s -w -X github.com/bdclark/consulssm/version.Version={{ .Version }} -X github.com/bdclark/consulssm/version.GitCommit={{ .Commit }}
-  binary: nomadctl
+  binary: consulssm
 brew:
   github:
     owner: bdclark
