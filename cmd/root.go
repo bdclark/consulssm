@@ -60,8 +60,8 @@ func Execute() {
 	rootCmd.AddCommand(syncCmd)
 	rootCmd.AddCommand(agentCmd)
 
-	if os.Getenv("AWS_REGION") == "" {
-		os.Setenv("AWS_REGION", "us-east-1")
+	if os.Getenv("AWS_DEFAULT_REGION") == "" {
+		os.Setenv("AWS_DEFAULT_REGION", "us-east-1")
 	}
 
 	rootCmd.Execute()
