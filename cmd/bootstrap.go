@@ -55,7 +55,7 @@ var bootstrapCmd = &cobra.Command{
 				os.Exit(255)
 			}
 		}
-		if viper.GetBool(HideBootstrapFlagName) {
+		if !viper.GetBool(HideBootstrapFlagName) {
 			fmt.Println(id)
 		}
 	},
