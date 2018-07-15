@@ -29,6 +29,9 @@ var bootstrapCmd = &cobra.Command{
 		if viper.GetBool(DebugFlagName) {
 			log.SetLevel(log.DebugLevel)
 		}
+		if viper.GetString(RegionFlagName) != "" {
+			os.Setenv("AWS_REGION", viper.GetString(RegionFlagName))
+		}
 
 		consulTokenParam := viper.GetString(ConsulTokenParamFlagName)
 		if consulTokenParam == "" {

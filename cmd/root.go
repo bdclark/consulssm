@@ -30,6 +30,10 @@ const (
 	// DebugFlagName is the flag which sets whether
 	// debug logging will be enabled
 	DebugFlagName = "debug"
+
+	// RegionFlagName is the flag which sets the
+	// AWS Region
+	RegionFlagName = "region"
 )
 
 // Formatter is the struct used in the logging package.
@@ -48,6 +52,8 @@ func init() {
 
 	rootCmd.PersistentFlags().Bool(DebugFlagName, false, "Enable debug logging")
 	viper.BindPFlag(DebugFlagName, rootCmd.PersistentFlags().Lookup(DebugFlagName))
+	rootCmd.PersistentFlags().String(RegionFlagName, "", "AWS Region")
+	viper.BindPFlag(RegionFlagName, rootCmd.PersistentFlags().Lookup(RegionFlagName))
 
 	viper.SetEnvPrefix("ssm")
 	viper.AutomaticEnv()
@@ -60,8 +66,8 @@ func Execute() {
 	rootCmd.AddCommand(syncCmd)
 	rootCmd.AddCommand(agentCmd)
 
-	if os.Getenv("AWS_DEFAULT_REGION") == "" {
-		os.Setenv("AWS_DEFAULT_REGION", "us-east-1")
+	if os.Getenv("AWS_REGION") == "" {
+		os.Setenv("AWS_REGION", "us-east-1")
 	}
 
 	rootCmd.Execute()

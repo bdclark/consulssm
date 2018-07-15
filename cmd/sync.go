@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"os"
 	"time"
 
 	"github.com/spf13/viper"
@@ -43,6 +44,9 @@ var syncCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		if viper.GetBool(DebugFlagName) {
 			log.SetLevel(log.DebugLevel)
+		}
+		if viper.GetString(RegionFlagName) != "" {
+			os.Setenv("AWS_REGION", viper.GetString(RegionFlagName))
 		}
 
 		consulTokenParam := viper.GetString(ConsulTokenParamFlagName)

@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"os"
+
 	"github.com/bdclark/consulssm/acl"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -80,6 +82,13 @@ func init() {
 }
 
 func agentACLRun(cmd *cobra.Command, args []string) {
+	if viper.GetBool(DebugFlagName) {
+		log.SetLevel(log.DebugLevel)
+	}
+	if viper.GetString(RegionFlagName) != "" {
+		os.Setenv("AWS_REGION", viper.GetString(RegionFlagName))
+	}
+
 	c, err := acl.NewClientSet(&acl.ClientSetInput{
 		ConsulTokenParam: viper.GetString(ConsulTokenParamFlagName),
 	})
